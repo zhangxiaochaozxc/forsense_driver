@@ -6,7 +6,7 @@ ParseStruct _parse;
 uint32_t crcAccum=0;
 NAV_DATA nav_data;
 unsigned char payload[3000];
-
+struct  MULTI_LONG_CMD_STRUCT data_cmd_long;
 
 forsense_ins::nav619Data forsense_insdata;
 ros::Publisher forsense_insdata_pub;
@@ -199,3 +199,30 @@ uint32_t crc_crc32(uint32_t crc, const uint8_t *buf, uint32_t size)
 
 
 
+
+
+/**
+ * 命令通用函数，包含6个32位参数
+ */
+void  Send_CMD_LONG(uint16_t cmd_id,float cm1,float cm2,uint32_t cm3,uint32_t cm4,int32_t cm5,int32_t cm6)
+{
+    uint32_t check_crc=0;
+
+
+    data_cmd_long.header1=0x55;
+    data_cmd_long.header2=0xaa;
+    data_cmd_long.id=cmd_id;
+    data_cmd_long.length=sizeof(data_cmd_long)-10;
+
+    data_cmd_long.param1=cm1;
+    data_cmd_long.param2=cm2;
+    data_cmd_long.param3=cm3;
+    data_cmd_long.param4=cm4;
+    data_cmd_long.param5=cm5;
+    data_cmd_long.param6=cm6;
+
+    int len=sizeof(data_cmd_long)-4;
+    check_crc=1;
+    data_cmd_long.check_crc=crc_crc32(check_crc,(uint8_t *)(&data_cmd_long), len);
+    Cout((uint8_t *)(&data_cmd_long),sizeof(data_cmd_long));
+}

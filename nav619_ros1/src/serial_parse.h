@@ -96,6 +96,24 @@ struct  NAV_DATA
     //    uint32_t check_crc;//crc校验位
 }__attribute__((packed));
 
+/**
+ * 命令通用结构体
+ */
+struct  MULTI_LONG_CMD_STRUCT
+{
+uint8_t header1;    
+uint8_t header2;
+uint16_t id;
+uint16_t length;
+float param1;
+float param2;
+uint32_t param3;
+uint32_t param4;
+int32_t param5;
+int32_t param6;
+uint32_t check_crc;
+}__attribute__((packed));
+
 
 void imu_rx(unsigned char data);
 uint32_t crc_crc32(uint32_t crc, const uint8_t *buf, uint32_t size);

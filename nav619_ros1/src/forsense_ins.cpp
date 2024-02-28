@@ -8,7 +8,7 @@
 
 static int frame_rate;
 static int frame_count;
-
+extern  MULTI_LONG_CMD_STRUCT data_cmd_long;
 static uint8_t buf[2048];
 
 void timer(int sig)
@@ -61,7 +61,10 @@ int main(int argc, char** argv)
 	}
 	
 	alarm(1);
-	
+	Send_CMD_LONG(3,8,0,0,0,0,0);
+	for (int i = 0; i < 10; i++)
+	sp.write((uint8_t *)&data_cmd_long,sizeof(data_cmd_long));
+
 	ros::Rate loop_rate(500);
 
 
