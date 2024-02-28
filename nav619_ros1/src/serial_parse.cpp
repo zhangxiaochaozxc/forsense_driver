@@ -224,5 +224,4 @@ void  Send_CMD_LONG(uint16_t cmd_id,float cm1,float cm2,uint32_t cm3,uint32_t cm
     int len=sizeof(data_cmd_long)-4;
     check_crc=1;
     data_cmd_long.check_crc=crc_crc32(check_crc,(uint8_t *)(&data_cmd_long), len);
-    Cout((uint8_t *)(&data_cmd_long),sizeof(data_cmd_long));
 }

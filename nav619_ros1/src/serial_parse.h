@@ -118,7 +118,7 @@ uint32_t check_crc;
 void imu_rx(unsigned char data);
 uint32_t crc_crc32(uint32_t crc, const uint8_t *buf, uint32_t size);
 extern ros::Publisher forsense_insdata_pub;
-
+void  Send_CMD_LONG(uint16_t cmd_id,float cm1,float cm2,uint32_t cm3,uint32_t cm4,int32_t cm5,int32_t cm6);
 
 #endif
 
