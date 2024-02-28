@@ -34,11 +34,11 @@ hugepages        null          tty12     tty40  ttyS1      udmabuf  vmci
 
 ## 编译imu_ros2工作空间
 
-1. 打开终端进入/forsense_driver/imu_ros2目录
+1. 打开终端进入/forsense_driver/ahrs_imu_ros2目录
 2. 执行`colcon build`命令，编译成功后出现如下信息。
 
 ```shell
-linux@ubuntu20:~/forsense_driver/imu_ros2$ colcon build
+linux@ubuntu20:~/forsense_driver/ahrs_imu_ros2$ colcon build
 Starting >>> imu_ros2
 Finished <<< imu_ros2 [0.24s]                  
 
