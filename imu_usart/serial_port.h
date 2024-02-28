@@ -76,6 +76,10 @@ struct AHRS_PAYLOAD
   float imu[7];
 };
 
+typedef struct Quaternion {
+    double w, x, y, z;
+} Quaternion;
+
 #pragma pack(pop)//恢复对齐状态
 typedef union 
 { 

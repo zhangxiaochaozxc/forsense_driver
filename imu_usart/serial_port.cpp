@@ -1,5 +1,7 @@
 #include "serial_port.h"
 #include <iostream>
+#include <stdio.h>
+#include <math.h>
 uint32_t err_num=0;
 static int is_valid_baud(int baud_rate)
 {
@@ -219,6 +221,34 @@ uint32_t crc_crc32(uint32_t crc, const uint8_t *buf, uint32_t size) {
     return crc;
 }
 
+
+// 功能：将欧拉角转换成四元数
+// 参数：绕Z轴、Y轴、X轴的旋转角度（单位：度每秒）
+// 返回值：四元数表示的旋转
+Quaternion eulerToQuaternion(float yaw, float pitch, float roll) {
+    // 将角度转换为弧度
+    float yawRad = yaw * M_PI / 180.0;
+    float pitchRad = pitch * M_PI / 180.0;
+    float rollRad = roll * M_PI / 180.0;
+    
+    // 计算半角的正余弦值
+    float cr = cos(rollRad * 0.5);
+    float cp = cos(pitchRad * 0.5);
+    float cy = cos(yawRad * 0.5);
+    float sr = sin(rollRad * 0.5);
+    float sp = sin(pitchRad * 0.5);
+    float sy = sin(yawRad * 0.5);   
+    // 计算四元数
+    Quaternion q;
+    q.w = cr * cp * cy + sr * sp * sy;
+    q.x = sr * cp * cy - cr * sp * sy;
+    q.y = cr * sp * cy + sr * cp * sy;
+    q.z = cr * cp * sy - sr * sp * cy;
+
+    return q;
+}
+
+
 // 数据提取函数
 void data_extraction(void) {
     float attitude[3];
@@ -229,7 +259,7 @@ void data_extraction(void) {
     if(_parse.id==0x02)
 
     {
-        imu_data[0] = rxdata_union.AHRS_DATA_9axis.imu[0];
+        imu_data[0] = rxdata_union.AHRS_DATA_9axis.imu[0]; 
         imu_data[1] = rxdata_union.AHRS_DATA_9axis.imu[1];
         imu_data[2] = rxdata_union.AHRS_DATA_9axis.imu[2];
 
@@ -240,18 +270,27 @@ void data_extraction(void) {
         attitude[0] = rxdata_union.AHRS_DATA_9axis.roll;
         attitude[1] = rxdata_union.AHRS_DATA_9axis.pitch;
         attitude[2] = rxdata_union.AHRS_DATA_9axis.yaw;
+     
+      //将欧拉角转换成四元数
+      Quaternion q = eulerToQuaternion(attitude[2] , attitude[1] , attitude[0] );
 
-        printf("acc_x=%.8f\n",imu_data[0]);
-        printf("acc_y=%.8f\n",imu_data[1]);
-        printf("acc_z=%.8f\n",imu_data[2]);
-        printf("gyro_x=%.8f\n",imu_data[3]);
-        printf("gyro_y=%.8f\n",imu_data[4]);
-        printf("gyro_z=%.8f\n",imu_data[5]);
+        printf("acc_x=%.8f g\n",imu_data[0]);
+        printf("acc_y=%.8f g\n",imu_data[1]);
+        printf("acc_z=%.8f g\n",imu_data[2]);
+        printf("gyro_x=%.8f rad/s\n",imu_data[3]);
+        printf("gyro_y=%.8f rad/s\n",imu_data[4]);
+        printf("gyro_z=%.8f rad/s\n",imu_data[5]);
 
-        printf("roll=%.8f\n",attitude[0]);
-        printf("pitch=%.8f\n",attitude[1]);
-        printf("yaw=%.8f\n",attitude[2]);
-          printf("err_num=%d\n",err_num);
+        printf("roll=%.8f\n°/s",attitude[0]);
+        printf("pitch=%.8f°/s\n",attitude[1]);
+        printf("yaw=%.8f°/s\n",attitude[2]);
+        printf("q.x=%.8f\n",q.x);
+        printf("q.y=%.8f\n",q.y);
+        printf("q.z=%.8f\n",q.z);
+        printf("q.w=%.8f\n\n",q.w);
+
+
+        printf("err_num=%d\n",err_num);
     }
 }
     
