@@ -4,6 +4,7 @@
 ParseUnion    rxdata_union;
 ParseStruct   _parse;
 #define DEG_TO_RAD   (0.01745329)
+#define G_TO_M_S2   (9.80665)
 /**
  * crc32计算表
  */
@@ -74,9 +75,9 @@ void data_extraction(void)
     imu_data.header.stamp = ros::Time::now();
     imu_data.header.frame_id = "imu";
     
-    imu_data.linear_acceleration.x = rxdata_union.AHRS_DATA_9axis.imu[0];
-    imu_data.linear_acceleration.y = -rxdata_union.AHRS_DATA_9axis.imu[1];
-    imu_data.linear_acceleration.z = -rxdata_union.AHRS_DATA_9axis.imu[2];
+    imu_data.linear_acceleration.x = rxdata_union.AHRS_DATA_9axis.imu[0]*G_TO_M_S2;
+    imu_data.linear_acceleration.y = -rxdata_union.AHRS_DATA_9axis.imu[1]*G_TO_M_S2;
+    imu_data.linear_acceleration.z = -rxdata_union.AHRS_DATA_9axis.imu[2]*G_TO_M_S2;
 
     imu_data.angular_velocity.x = rxdata_union.AHRS_DATA_9axis.imu[3]*DEG_TO_RAD;
     imu_data.angular_velocity.y = -rxdata_union.AHRS_DATA_9axis.imu[4]*DEG_TO_RAD;
