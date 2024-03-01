@@ -274,23 +274,21 @@ void data_extraction(void) {
       //将欧拉角转换成四元数
       Quaternion q = eulerToQuaternion(attitude[2] , attitude[1] , attitude[0] );
 
-        printf("acc_x=%.8f g\n",imu_data[0]);
-        printf("acc_y=%.8f g\n",imu_data[1]);
-        printf("acc_z=%.8f g\n",imu_data[2]);
-        printf("gyro_x=%.8f rad/s\n",imu_data[3]);
-        printf("gyro_y=%.8f rad/s\n",imu_data[4]);
-        printf("gyro_z=%.8f rad/s\n",imu_data[5]);
+        // printf("acc_x=%.8f g\n",imu_data[0]);
+        // printf("acc_y=%.8f g\n",imu_data[1]);
+        // printf("acc_z=%.8f g\n",imu_data[2]);
+        // printf("gyro_x=%.8f rad/s\n",imu_data[3]);
+        // printf("gyro_y=%.8f rad/s\n",imu_data[4]);
+        // printf("gyro_z=%.8f rad/s\n",imu_data[5]);
 
-        printf("roll=%.8f\n°/s",attitude[0]);
-        printf("pitch=%.8f°/s\n",attitude[1]);
-        printf("yaw=%.8f°/s\n",attitude[2]);
-        printf("q.x=%.8f\n",q.x);
-        printf("q.y=%.8f\n",q.y);
-        printf("q.z=%.8f\n",q.z);
-        printf("q.w=%.8f\n\n",q.w);
+        // printf("roll=%.8f\n°/s",attitude[0]);
+        // printf("pitch=%.8f°/s\n",attitude[1]);
+        // printf("yaw=%.8f°/s\n",attitude[2]);
+        printf("q.x=%.8f\n q.y=%.8f\n q.z=%.8f\n q.w=%.8f\n\n",q.x,q.y,q.z,q.w);
 
 
-        printf("err_num=%d\n",err_num);
+
+        // printf("err_num=%d\n",err_num);
     }
 }
     
