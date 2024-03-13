@@ -5,6 +5,7 @@
 * 测试环境：Ubuntu22
 
 * ROS版本：ROS2 humble
+* ROS版本：ROS2 foxy
 
 * 测试设备：
 
