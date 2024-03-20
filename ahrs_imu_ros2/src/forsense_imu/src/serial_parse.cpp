@@ -2,8 +2,12 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
 #include <sensor_msgs/msg/imu.hpp>
+
+
 # define M_PI		3.14159265358979323846	/* pi */
 #define M_G     9.80665
+
+
 ParseStruct _parse;
 uint32_t crcAccum=0;
 NAV_DATA nav_data;
@@ -14,19 +18,62 @@ struct  MULTI_LONG_CMD_STRUCT data_cmd_long;
  extern sensor_msgs::msg::Imu imu_data;
  extern  rclcpp::Publisher<sensor_msgs::msg::Imu>::SharedPtr imu_pub;
 uint32_t tes_num=0;
+
+
+
+// 功能：将欧拉角转换成四元数
+// 参数：绕Z轴、Y轴、X轴的旋转角度（单位：度每秒）
+// 返回值：四元数表示的旋转
+Quaternion eulerToQuaternion(float yaw, float pitch, float roll) {
+    // 将角度转换为弧度
+    float yawRad = yaw * M_PI / 180.0;
+    float pitchRad = pitch * M_PI / 180.0;
+    float rollRad = roll * M_PI / 180.0;
+    
+    // 计算半角的正余弦值
+    float cr = cos(rollRad * 0.5);
+    float cp = cos(pitchRad * 0.5);
+    float cy = cos(yawRad * 0.5);
+    float sr = sin(rollRad * 0.5);
+    float sp = sin(pitchRad * 0.5);
+    float sy = sin(yawRad * 0.5);   
+    // 计算四元数
+    Quaternion q;
+    q.w = cr * cp * cy + sr * sp * sy;
+    q.x = sr * cp * cy - cr * sp * sy;
+    q.y = cr * sp * cy + sr * cp * sy;
+    q.z = cr * cp * sy - sr * sp * cy;
+
+    return q;
+}
+
+
+
+
+
 void data_extraction(void)
 {
-
+  float attitude[3];
 
      if(_parse.id == 0x02)
    {
-	
+        attitude[0] = rxdata_union.AHRS_DATA.roll;
+        attitude[1] = rxdata_union.AHRS_DATA.pitch;
+        attitude[2] = rxdata_union.AHRS_DATA.yaw;
+        Quaternion q = eulerToQuaternion(attitude[2] , attitude[1] , attitude[0] );
+
         imu_data.angular_velocity.x = rxdata_union.AHRS_DATA.imu[3]/180.0*M_PI;	
         imu_data.angular_velocity.y = rxdata_union.AHRS_DATA.imu[4]/180.0*M_PI;	
         imu_data.angular_velocity.z = rxdata_union.AHRS_DATA.imu[5]/180.0*M_PI;	
         imu_data.linear_acceleration.x = rxdata_union.AHRS_DATA.imu[0]*M_G;	
         imu_data.linear_acceleration.y = rxdata_union.AHRS_DATA.imu[1]*M_G;	
         imu_data.linear_acceleration.z = rxdata_union.AHRS_DATA.imu[2]*M_G;	
+ 
+        imu_data.orientation.x=q.x;
+        imu_data.orientation.y=q.y;
+        imu_data.orientation.z=q.z;
+        imu_data.orientation.w=q.w;
+
         imu_data.header.stamp = rclcpp::Clock().now();
         imu_pub->publish(imu_data);
    }
